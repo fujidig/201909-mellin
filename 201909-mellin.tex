@@ -1,0 +1,515 @@
+\documentclass{jsarticle}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{framed}
+\usepackage{braket}
+\usepackage{bm}
+\usepackage{mathrsfs}
+\usepackage{mathabx}
+\usepackage{accents}
+\usepackage{tocloft}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{tikz}
+\usepackage{url}
+\usepackage{color}
+\usepackage{xifthen}
+\usepackage{xcolor}
+\usepackage{framed}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathreplacing}
+
+\newcommand{\scrN}{\mathcal{N}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Pfin}{\mathcal{P}_{\mathrm{fin}}}
+\newcommand{\boldsig}{\undertilde{\boldsymbol{\Sigma}}}
+\newcommand{\boldpi}{\undertilde{\boldsymbol{\Pi}}}
+\newcommand{\bolddelta}{\undertilde{\boldsymbol{\Delta}}}
+\newcommand{\range}{\operatorname{range}}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\Map}{\operatorname{Map}}
+\newcommand{\append}{{}^\frown}
+\newcommand{\Ein}{\operatorname{Ein}}
+
+\newcommand{\needtocheck}[1][]{%
+	\ifthenelse{\equal{#1}{}}{%
+		\textcolor{blue}{[要チェック]}%
+	}{%
+		\textcolor{blue}{[要チェック: #1]}%
+	}%
+}
+
+\newcommand{\todo}[1][]{%
+	\ifthenelse{\equal{#1}{}}{%
+		\textcolor{red}{[TODO]}%
+	}{%
+		\textcolor{red}{[TODO: #1]}%
+	}%
+}
+
+\theoremstyle{definition}
+\newtheorem{thm}{定理}
+\newtheorem*{thm*}{定理}
+\newtheorem{defi}[thm]{定義}
+\newtheorem{lem}[thm]{補題}
+\newtheorem*{lem*}{補題}
+\newtheorem{fact}[thm]{事実}
+\newtheorem*{fact*}{事実}
+\newtheorem*{formula*}{公式}
+\newtheorem{prop}[thm]{命題}
+\newtheorem*{claim*}{主張}
+\newtheorem{exm}[thm]{例}
+\newtheorem{rmk}[thm]{注意}
+\newtheorem*{rmk*}{注意}
+\newtheorem{cor}[thm]{系}
+\newtheorem*{cor*}{系}
+\renewcommand{\proofname}{証明}
+
+
+\renewenvironment{leftbar}[1][\hsize]
+{%
+\def\FrameCommand
+{%
+{\color{black}\vrule width 1pt}%
+\hspace{0pt}%must no space.
+\fboxsep=\FrameSep\colorbox{white}%
+}%
+\MakeFramed{\hsize#1\advance\hsize-\width\FrameRestore}%
+}
+{\endMakeFramed}
+
+
+\title{メリン変換を用いたある関数の漸近挙動の証明}
+\author{でぃぐ (\texttt{@fujidig})}
+
+\begin{document}
+\maketitle
+
+本稿では次の結果を証明する．
+
+\begin{leftbar}
+\begin{thm*}
+\[ A(y) = \sum_{k \ge 1} \left(-1 + \exp \sum_{j \ge k} \frac{y^j}{j} \right) \]
+とおく．
+このとき
+\[ A(e^{-x}) = \sum_{k \ge 1} \left(-1 + \exp \sum_{j \ge k} \frac{e^{-jx}}{j} \right) \]
+は$x > 0$で$x \to 0$と近づけたとき
+\[ A(e^{-x}) \sim e^{-\gamma} \frac{1}{x} \log \frac{1}{x} \]
+となる．
+\end{thm*}
+\end{leftbar}
+
+\subsection*{Step 0}
+
+本稿で主に使う道具はメリン変換である．
+関数$f(x)$のメリン変換は次で定義される:
+\[ M[f(x)](s) = \int_0^\infty x^{s-1} f(x) dx. \]
+
+\subsection*{Step 1}
+
+まず，内側の和を積分で近似することにより
+\begin{equation}
+A(e^{-x}) \sim \sum_{k \ge 1} \left(-1 + \exp \int_{kx}^\infty \frac{e^{-u}}{u} du \right) \label{approx}
+\end{equation}
+を得る．
+
+正確には
+\[ A(e^{-x}) = \sum_{k \ge 1} \left(-1 + \exp \int_{kx}^\infty \frac{e^{-u}}{u} du \right) + O(1/x)\ \ \ \ (x \to 0) \]
+となる．
+
+式 (\ref{approx})の右辺を$\tilde{A}(x)$と書く．
+
+ここで$E_1(x) = \int_{x}^\infty \frac{e^{-u}}{u} du$とおくと，
+\[ \tilde{A}(x) = \sum_{k \ge 1} \left(-1 + \exp E_1(x) \right). \]
+
+上の近似を正当化する。
+
+\begin{leftbar}
+\begin{formula*}[Euler--Maclaurinの公式]
+関数$f$について
+\[
+\sum_{j=m}^n f(j) - \int_m^n f(t) dt = \frac{f(m)+f(n)}{2} + \int_m^n f'(t) (\{t\} - 1/2) dt.
+\]
+ここに$\{t\}$は実数$t$の小数部分。
+\end{formula*}
+\end{leftbar}
+
+$f(t) = \frac{e^{-tx}}{tx}$に対してEuler--Maclaurinの公式を適用すると
+\begin{align}
+\frac{1}{x} \left(
+\sum_{j \ge k} \frac{e^{-jx}}{j}
+- \int_{kx}^\infty \frac{e^{-u}}{u} du
+\right)
+&= \sum_{j \ge k} \frac{e^{-jx}}{jx}
+- \int_{k}^\infty \frac{e^{-ux}}{ux} du  \notag \\
+& = \sum_{j \ge k} f(j)
+- \int_{k}^\infty f(u) du  \notag \\
+& = \frac{f(k)+f(\infty)}{2} + \int_k^\infty f'(t) (\{t\} - 1/2) dt \label{eulermac}
+\end{align}
+
+ここで$f(\infty)$は$0$であり、
+\begin{align*}
+\left| \int_k^\infty f'(t) (\{t\} - 1/2) dt \right|
+&\le \frac{1}{2} \int_k^\infty |f'(t)| dt \\
+&= - \frac{1}{2} \int_k^\infty f'(t) dt & \text{($f'$は常に負より)} \\
+&= - \frac{1}{2} [f(t)]_{t=k}^\infty \\
+&= \frac{1}{2} f(k)
+\end{align*}
+なので式 (\ref{eulermac})の絶対値は
+\begin{align*}
+\left|
+\frac{f(k)+f(\infty)}{2} + \int_k^\infty f'(t) (\{t\} - 1/2) dt
+\right| \le f(k) = \frac{e^{-k x}}{k x}.
+\end{align*}
+よって
+\begin{align*}
+\left|
+\sum_{j \ge k} \frac{e^{-jx}}{j}
+- \int_{kx}^\infty \frac{e^{-u}}{u} du
+\right| \le \frac{e^{-k x}}{k}.
+\end{align*}
+この左辺の絶対値の中身を$\varepsilon(k, x)$とおく。
+
+すると
+\begin{align*}
+\left|\exp \sum_{j \ge k} \frac{e^{-jx}}{j}
+- \exp \int_{kx}^\infty \frac{e^{-u}}{u} du\right|
+&= \left(\exp \int_{kx}^\infty \frac{e^{-u}}{u} du\right) |\exp \varepsilon(x, k) - 1| \\
+&\le \exp E_1(k x) (e |\varepsilon(x, k)|) \\
+&\le \exp E_1(k x) \frac{e \cdot e^{-k x}}{k}.
+\end{align*}
+
+今、
+\begin{align*}
+\sum_{k=1/x}^\infty \exp E_1(k x) \frac{e \cdot e^{-k x}}{k}
+&\le \sum_{k=1/x}^\infty \exp (1) \frac{e \cdot e^{-k x}}{k} \\
+&= e^2 \sum_{k=1/x}^\infty \frac{e^{-k x}}{k} \\
+&= e^2 \int_{1/x-1}^\infty \frac{e^{-u x}}{u} du \\
+&= e^2 \int_{1-x}^\infty \frac{e^{-t}}{t/x} \frac{dt}{x} \\
+&= e^2 \int_{1-x}^\infty \frac{e^{-t}}{t} dt \\
+&\le e^2 \int_{1/2}^\infty \frac{e^{-t}}{t} dt \\
+&= e^2 E_1(1/2) \\
+&= O(1).
+\end{align*}
+
+次に
+\begin{align*}
+\sum_{k=1}^{1/x} \exp E_1(k x) \frac{e \cdot e^{-k x}}{k}
+&= \sum_{k=1}^{1/x} (\exp \int_{kx}^1 \frac{e^{-u}}{u} du) \exp E_1(1) \frac{e \cdot e^{-k x}}{k} \\
+&= \sum_{k=1}^{1/x} \left(\exp \int_{kx}^1 \frac{e^{-u}}{u} du\right) \exp E_1(1) \frac{e \cdot e^{-k x}}{k} \\
+&= e^{E_1(x)+1} \sum_{k=1}^{1/x} \left(\exp \int_{kx}^1 \frac{e^{-u}}{u} du\right) \frac{e^{-k x}}{k} \\
+&\le e^{E_1(x)+1} \sum_{k=1}^{1/x} \left(\exp \int_{kx}^1 \frac{1}{u} du\right) \frac{1}{k} \\
+&= e^{E_1(x)+1} \sum_{k=1}^{1/x} \frac{1}{kx} \frac{1}{k} \\
+&\le e^{E_1(x)+1} \frac{1}{x} \sum_{k=1}^{\infty} \frac{1}{k^2} \\
+&\le e^{E_1(x)+1} \zeta(2) \frac{1}{x} \\
+&= O(1/x)
+\end{align*}
+
+したがって
+\begin{align*}
+|A(e^{-x}) - \tilde{A}(x)|
+&\le \sum_{k \ge 1} \left|\exp \sum_{j \ge k} \frac{e^{-jx}}{j} - \int_{kx}^\infty \frac{e^{-u}}{u} du \right| \\
+&= O(1/x)\ \ \ \ (x \to 0)
+\end{align*}
+がわかる。
+
+
+
+以降$\tilde{A}(x)$の漸近挙動を調べる．
+
+次の公式は今後しばしば使う．
+
+\begin{leftbar}
+\begin{formula*}
+\begin{equation}
+E_1(x) = -\gamma-\log x + \Ein(x) \label{e1_ein_fml}
+\end{equation}
+ただし，$\Ein(x) = \int_0^x \frac{1 - e^{-u}}{u} du$．
+\end{formula*}
+\end{leftbar}
+
+\subsection*{Step 2}
+
+今，$\Re(s)>1$としておく．
+
+次のメリン変換の公式を使う:
+
+\begin{leftbar}
+\begin{formula*}
+\[ M\left[\sum_{k \ge 1} f(k x)\right](s) = \zeta(s)M[f](s). \]
+\end{formula*}
+\end{leftbar}
+
+すると
+\[ M[\tilde{A}](s) = \zeta(s) M\left[ -1 + \exp E_1(x) \right](s) \]
+となる．
+
+この公式では積分と総和の交換をしている．それを正当化する．まず公式の証明を今の場合に限定して見る．
+
+\begin{align*}
+M\left[\sum_{k \ge 1} \left(-1 + \exp E_1(k x) \right)\right]
+&= \int_0^\infty x^{s-1} \left(\sum_{k \ge 1} \left(-1 + \exp E_1(k x) \right)\right) dx \\
+&= \sum_{k \ge 1} \int_0^\infty x^{s-1} \left(-1 + \exp E_1(k x) dx \right)  & (\ast) \\
+&=  \sum_{k \ge 1} \int_0^\infty \left(\frac{y}{k}\right)^{s-1} \left(-1 + \exp E_1(y) \right) \frac{dy}{k} \\
+&=  \left(\sum_{k \ge 1} k^{-s}\right) \left(\int_0^\infty y^{s-1} \left(-1 + \exp E_1(y) \right) dy\right) \\
+&= \zeta(s) \int_0^\infty y^{s-1} \left(-1 + \exp E_1(y) \right) dy
+\end{align*}
+
+$(\ast)$が積分と総和の交換をした部分である．この部分を正当化するには，
+\begin{align*}
+\sum_{k \ge 1} \int_0^\infty \left|x^{s-1} \left(-1 + \exp E_1(k x) \right)\right| dx
+\end{align*}
+が有限になればよい．
+
+まず上と同じ変形をすることにより
+\begin{align*}
+\sum_{k \ge 1} \int_0^\infty \left|x^{s-1} \left(-1 + \exp E_1(k x) \right)\right| dx
+&= \zeta(s) \int_0^\infty |y^{s-1}| \left(-1 + \exp E_1(y) \right) dy \\
+&= \zeta(s) \sum_{n \ge 1} \frac{1}{n!} \int_0^\infty y^{\Re(s)-1} \left(E_1(y)\right)^n dy. \\
+\end{align*}
+
+ここで$0 < y < 1$なら
+\begin{align*}
+E_1(y) = -\gamma-\log x+\Ein(y) \le 1-\gamma-\log y = -\log \frac{y}{e^{1-\gamma}}
+\end{align*}
+である．
+
+$c = 1/e^{1-\gamma}$とおく．すると$0$から$1$までの積分は
+\begin{align*}
+\sum_{n \ge 1} \frac{1}{n!} \int_0^1 y^{\Re(s)-1} (E_1(y))^n dy
+&= \sum_{n \ge 1} \frac{1}{n!} \int_0^1 y^{\Re(s)-1} (- \log cy)^n dy \\
+&= \sum_{n \ge 1} \frac{1}{n!} \int_0^\infty  \left(\frac{e^{-z}}{c}\right)^{\Re(s)-1} z^n \frac{e^{-z}dz}{c} \\
+&= \frac{1}{c^{\Re(s)}}\sum_{n \ge 1} \frac{1}{n!} \int_0^\infty  e^{-\Re(s) z} z^n dz \\
+&= \frac{1}{c^{\Re(s)}}\sum_{n \ge 1} \frac{1}{n!} \int_0^\infty  e^{-w} \left(\frac{w}{\Re(s)}\right)^n \frac{dw}{\Re(s)} \\
+&= \frac{1}{c^{\Re(s)}}\sum_{n \ge 1} \frac{1}{n!} \frac{1}{\Re(s)^{n+1}} \int_0^\infty  e^{-w} w^n dw \\
+&= \frac{1}{c^{\Re(s)}}\sum_{n \ge 1} \frac{1}{n!} \frac{1}{\Re(s)^{n+1}} \Gamma(n+1) \\
+&= \frac{1}{c^{\Re(s)}}\sum_{n \ge 1} \frac{1}{\Re(s)^{n+1}}  \\
+&= \frac{1}{c^{\Re(s)}} \frac{1}{\Re(s)^2 (1-1/\Re(s))}  \\
+\end{align*}
+
+次に$y > 1$なら
+\begin{align*}
+E_1(y) = \int_{y}^\infty \frac{e^{-u}}{u} du \le \int_{y}^\infty e^{-u} du = e^{-y}
+\end{align*}
+だから，$1$から$\infty$までの積分は，
+\begin{align*}
+\sum_{n \ge 1} \frac{1}{n!} \int_1^\infty y^{\Re(s)-1} (E_1(y))^n dy
+&\le \sum_{n \ge 1} \frac{1}{n!} \int_1^\infty y^{\Re(s)-1} e^{-ny} dy \\
+&= \sum_{n \ge 1} \frac{1}{n!} \int_n^\infty \left(\frac{z}{n}\right)^{\Re(s)-1} e^{-z} \frac{dz}{n} \\
+&= \sum_{n \ge 1} \frac{1}{n!} \frac{1}{n^{\Re(s)}}\int_n^\infty z^{\Re(s)-1} e^{-z} dz \\
+&= \sum_{n \ge 1} \frac{1}{n!} \frac{1}{n^{\Re(s)}}\int_n^\infty z^{\Re(s)-1} e^{-z} dz \\
+&\le \sum_{n \ge 1} \frac{1}{n!} \frac{1}{n^{\Re(s)}} \Gamma(\Re(s)) \\
+&\le \sum_{n \ge 1} \frac{1}{n!} \Gamma(\Re(s)) \\
+&= e \Gamma(\Re(s))
+\end{align*}
+
+よって，
+\begin{align*}
+\sum_{k \ge 1} \int_0^\infty \left|x^{s-1} \left(-1 + \exp E_1(k x) \right)\right| dx
+\le \zeta(s) \left(\frac{1}{c^{\Re(s)}} \frac{1}{\Re(s)^2 (1-1/\Re(s))} + e \Gamma(\Re(s))\right).
+\end{align*}
+ゆえに積分と総和の交換は正当化された．
+
+\subsection*{Step 3}
+メリン変換の定義に戻り，部分積分を行う．引き続き，$\Re(s)>1$としておく．すると
+\begin{align}
+M\left[ -1 + \exp E_1(x) \right](s) &= \int_0^\infty x^{s-1} \left(-1 + \exp \int_{x}^\infty \frac{e^{-u}}{u} du\right) dx \notag \\
+&= \int_0^\infty \left(\frac{x^s}{s}\right)' \left(-1 + \exp \int_{x}^\infty \frac{e^{-u}}{u} du\right) dx \notag \\
+&= - \int_0^\infty \frac{x^s}{s} \left( \exp \int_{x}^\infty \frac{e^{-u}}{u} du\right) \left(-\frac{e^{-x}}{x}\right) dx \notag \\
+&= \frac{1}{s} \int_0^\infty x^{s-1} e^{-x} \left( \exp \int_{x}^\infty \frac{e^{-u}}{u} du\right) dx \notag \\
+&= \frac{1}{s} \int_0^\infty x^{s-1} e^{-x} \exp E_1(x) dx \label{step3_conclusion}
+\end{align}
+を得る．ここで部分積分の境界項は消えることに注意する．
+
+実際，
+\begin{align*}
+\lim_{x\to\infty} x^s (-1+\exp \int_x^\infty \frac{e^{-u}}{u}du)
+&= \lim_{x\to\infty} \frac{-1+\exp \int_x^\infty \frac{e^{-u}}{u}du}{x^{-s}} \\
+&= \lim_{x\to\infty} \frac{(\exp \int_x^\infty \frac{e^{-u}}{u}du) (-\frac{e^{-x}}{x})}{-s x^{-s-1}}  & \text{(ロピタル)} \\
+&= \lim_{x\to\infty} \frac{1}{s} e^{-x} x^{s} \exp \int_x^\infty \frac{e^{-u}}{u}du \\
+&= \frac{e^{-\gamma}}{s} \lim_{x\to\infty} e^{-x} x^{s-1} \exp \Ein(x)
+\end{align*}
+であり，
+\begin{align*}
+|e^{-x} x^{s-1} \exp \Ein(x)| &\le e^{-x} x^{\Re(s)-1} e x \\
+&= e e^{-x} x^{\Re(s)} \\
+&\to 0 \ \ \ \ (x \to \infty)
+\end{align*}
+なので$x=\infty$の境界項は消える．
+
+\begin{align*}
+\lim_{x\to +0} x^s (-1+\exp \int_x^\infty \frac{e^{-u}}{u}du)
+&= \lim_{x\to +0} x^s \exp \int_x^\infty \frac{e^{-u}}{u}du \\
+&= e^{-\gamma} \lim_{x\to +0} x^{s-1} \exp \Ein(x) \\
+&= e^{-\gamma} (\lim_{x\to +0} x^{s-1}) (\lim_{x\to +0} \exp \Ein(x)) \\
+&= e^{-\gamma} \cdot 0 \cdot 1 \\
+&= 0
+\end{align*}
+なので$x=0$の境界項も消える．
+
+
+\subsection*{Step 4}
+
+式 (\ref{e1_ein_fml})をStep 3の式 (\ref{step3_conclusion})に代入し，
+\begin{align*}
+M\left[ -1 + \exp \int_{x}^\infty \frac{e^{-u}}{u} du \right](s) &= \frac{1}{s} \int_0^\infty x^{s-1} e^{-x}  \exp \left(-\gamma-\log x+\Ein(x)\right)  dx \\
+&= \frac{e^{-\gamma}}{s} \int_0^\infty x^{s-2} e^{-x}  \exp \Ein(x) dx \\
+\end{align*}
+を得る．
+
+\subsection*{Step 5}
+Step 4で得た結果をStep 2の式に代入する．すると，
+\begin{align*}
+M[\tilde{A}](s) &= \frac{e^{-\gamma}}{s} \zeta(s) \int_0^\infty x^{s-2} e^{-x}  \exp \Ein(x) dx \\
+&= \frac{e^{-\gamma}}{s} \zeta(s) \left(\int_0^\infty x^{s-2} e^{-x} dx + \int_0^\infty x^{s-2} e^{-x} (-1 + \exp \Ein(x)) dx \right) \\
+&= \frac{e^{-\gamma}}{s} \zeta(s) (\Gamma(s-1) + g(s))
+\end{align*}
+を得る．ここに
+\[ g(s) = \int_0^\infty x^{s-2} e^{-x} (-1 + \exp \Ein(x)) dx. \]
+
+\subsection*{Step 6}
+このstepではガンマ関数の微分の積分表示とその上からの評価を示す．
+$\Re(s) > 0$とする．
+
+\begin{align*}
+\int_0^1 |x^{s-1} e^{-x} (\log x)^n| dx &\le \int_0^1 x^{\Re(s)-1} e^{-x} (- \log x)^n dx \\
+&\le \int_0^1 x^{\Re(s)-1} (- \log x)^n dx \\
+&= \int_0^\infty e^{\Re(s) y} y^n dy\ \ \ \ (y = - \log x) \\
+&= \frac{1}{\Re(s)^{n+1}} \int_0^\infty e^{z} z^n dz \\
+&= \frac{n!}{\Re(s)^{n+1}}.
+\end{align*}
+
+\begin{align*}
+\int_1^\infty |x^{s-1} e^{-x} (\log x)^n| dx &\le \int_1^\infty x^{\Re(s)-1} e^{-x} (\log x)^n dx \\
+&\le \int_1^\infty x^{\Re(s)-1} e^{-x} ((n/e) x^{1/n})^n dx \\
+&= (n/e)^n \int_1^\infty x^{\Re(s)} e^{-x} dx \\
+&\le (n/e)^n \int_0^\infty x^{\Re(s)} e^{-x} dx \\
+&= (n/e)^n \Gamma(\Re(s)+1) \\
+&= n! \Gamma(\Re(s)+1) & (\text{Stirlingの公式}).
+\end{align*}
+
+以上より
+\begin{align*}
+\int_0^\infty |x^{s-1} e^{-x} (\log x)^n| dx &\le n!\left(\frac{1}{\Re(s)^{n+1}} + \Gamma(\Re(s)+1)\right)
+\end{align*}
+を得る．
+
+$g(s) = \int_0^\infty x^{s-1} f(x) dx$の形の関数の微分を考える．形式的に積分記号化の微分を行うと，
+\begin{equation}
+\frac{d}{ds} g(s) = \int_0^\infty x^{s-1} f(x) \log x dx \label{dgds}
+\end{equation}
+となる．どういう条件の下でこの変形が正当化できるか考える．この式の右辺を$\tilde{g}(s)$と書くと
+\begin{align*}
+\left|\frac{g(s+h) - g(s)}{h} - \tilde{g}(s)\right| &\le \frac{1}{|h|} \int_0^\infty |x^{s-1}| |f(x)| |x^h-1-h\log x| dx \\
+ &\le \frac{1}{|h|} \int_{-\infty}^\infty |e^{sy}| |f(e^y)| |e^{hy}-1-hy| dy \\
+ &\le \frac{1}{|h|} \int_{-\infty}^\infty |e^{sy}| |f(e^y)| |\sum_{n\ge 2} (hy)^n / n!| dy \\
+ &= \frac{1}{|h|} \sum_{n\ge 2} \frac{|h|^n}{n!} \int_{-\infty}^\infty |e^{sy}| |f(e^y)| |y|^n dy\\
+ &= \frac{1}{|h|} \sum_{n\ge 2} \frac{|h|^n}{n!} \int_{0}^\infty |x^{s-1}| |f(x)| |\log x|^n dx \\
+ &= |h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} \int_{0}^\infty |x^{s-1}| |f(x)| |\log x|^n dx & \text{($\heartsuit$)} \\
+\end{align*}
+
+よって，式(\ref{dgds})が成り立つためには($\heartsuit$)が$h \to 0$で$0$に収束すればよい．
+
+$f(x) = e^{-x}$の場合を考えると($\heartsuit$)は
+
+\begin{align*}
+|h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} \int_{0}^\infty |x^{s-1}| |f(x)| |\log x|^n dx
+&\le |h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} n!\left(\frac{1}{\Re(s)^{n+1}} + \Gamma(\Re(s)+1)\right) \\
+&= |h| \sum_{n\ge 2} |h|^{n-2} \left(\frac{1}{\Re(s)^{n+1}} + \Gamma(\Re(s)+1)\right) \\
+&= |h| \left(\frac{1}{\Re(s)^3} \sum_{n\ge 0} \frac{|h|^n}{\Re(s)^n} + \Gamma(\Re(s)+1) \sum_{n\ge 0} |h|^n\right) \\
+&= |h| \left(\frac{1}{\Re(s)^3} \frac{1}{1 - |h|/\Re(s)} + \Gamma(\Re(s)+1) \frac{1}{1-|h|}\right) \\
+&\to 0\ \ (h \to 0)
+\end{align*}
+
+よって，
+\[
+\Gamma'(s) = \frac{d}{ds} \int_0^\infty x^{s-1} e^{-x} dx = \int_0^\infty x^{s-1} e^{-x} \log x dx.
+\]
+
+%$\Gamma$の高階微分についても，同様の議論を繰り返すことにより，
+%\[
+%\Gamma^{(n)}(s) = \frac{d^n}{ds^n} \int_0^\infty x^{s-1} e^{-x} dx = \int_0^\infty x^{s-1} e^{-x} (\log x)^n dx
+%\]
+%を得る．
+
+\subsection*{Step 7}
+$g(s)$が$\Re(s) > 1/2+\varepsilon$で正則なことを示す．
+ただし，$\varepsilon$は$0 < \varepsilon < 1/2$なる任意の定数．
+
+Step 6で行った議論より
+\[ g(s) = \int_0^\infty x^{s-2} e^{-x} (-1 + \exp \Ein(x)) dx. \]
+に対して
+\begin{align}
+|h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} \int_{0}^\infty |x^{s-2}| |e^{-x}| |-1 + \exp \Ein(x)| |\log x|^n dx \label{dgdserr}
+\end{align}
+が$h \to 0$で$0$に収束することを示せばよい．
+
+和の中身は
+\begin{align*}
+\int_{0}^\infty |x^{s-2}| |e^{-x}| |-1 + \exp \Ein(x)| |\log x|^n dx
+&\le \sum_{k\ge 1} \frac{1}{k!} \int_{0}^\infty |x^{s-2}| |e^{-x}| |\Ein(x)|^k |\log x|^n dx \\
+&\le \sum_{k\ge 1} \frac{1}{k!} \int_{0}^\infty |x^{s+k/2-2}| |e^{-x}| |\log x|^n dx \\
+&\le \sum_{k\ge 1} \frac{1}{k!} n!\left(\frac{1}{\Re(s+k/2-1)^{n+1}} + \Gamma(\Re(s+k/2-1)+1)\right) \\
+&= n! \sum_{k\ge 1} \frac{1}{k!} \left(\frac{1}{(\Re(s)+k/2-1)^{n+1}} + \Gamma(\Re(s)+k/2)\right) \\
+&\le n! \times \text{(定数)}
+\end{align*}
+\todo[定数をもっと詳しく書く]
+
+式 (\ref{dgdserr})に代入して
+\begin{align*}
+|h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} \int_{0}^\infty |x^{s-2}| |e^{-x}| |-1 + \exp \Ein(x)| |\log x|^n dx
+&\le |h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} n! \times \text{(定数)} \\
+&\le \text{(定数)} |h| \sum_{n\ge 2} |h|^{n-2} \\
+&\le \text{(定数)} |h|/(1-|h|) \\
+&\to 0\ \ (h \to 0).
+\end{align*}
+
+よって，$g(s)$は$\Re(s) > 1/2 + \varepsilon$で正則．
+
+\subsection*{Step 8}
+以上より
+\begin{align*}
+M[\tilde{A}](s) &= \frac{e^{-\gamma}}{s} \zeta(s) (\Gamma(s-1) + g(s))
+\end{align*}
+を得る．ここに$g(s)$は$\Re(s) > 1/2+\varepsilon$で正則な関数．
+
+$1/s$のテイラー展開と$\zeta(s)$と$\Gamma(s-1)$のローラン展開は
+\[ 1/s = 1 - (s - 1) + O((s-1)^2) \ \ \ \ (s \to 1)\]
+\[ \zeta(s) = \frac{1}{s-1} + \gamma + O(s-1) \ \ \ \ (s \to 1) \]
+\[ \Gamma(s-1) = \frac{1}{s-1} - \gamma + O(s-1) \ \ \ \ (s \to 1) \]
+なことを使うと，$\Re(s) > 1/2+\varepsilon$で$M[\tilde{A}](s)$は
+\[ M[\tilde{A}](s) \asymp  \frac{e^{-\gamma}}{(s-1)^2} + \frac{e^{-\gamma} (g(1) - 1)}{s-1} \]
+となる．ここに$\asymp$は差が正則関数の意味．
+
+\subsection*{Step 9}
+メリン変換の漸近挙動の対応の定理を使う．
+
+
+\begin{leftbar}
+\begin{thm*}
+$f(x)$を$(0, \infty)$で連続な関数とし，そのメリン変換$Mf(s)$はfundamental strip $\langle \alpha, \beta \rangle$を持つとする． \todo[fundamental stripの定義]
+ある$\gamma< \alpha$について，$Mf(s)$が$\langle \gamma, \beta \rangle$に有理型接続できると仮定し，そこで極は有限個で，$\Re(s) = \gamma$で解析的とする．
+また，$\eta \in (\alpha, \beta)$と$r > 1$が存在して，$\gamma \leq \Re(s) \leq \eta$で$|s| \to \infty$としたとき
+\[ Mf(s) = O(|s|^{-r}) \]
+となることを仮定する．
+このときもし，$s \in \langle \gamma, \alpha \rangle$について
+\[ Mf(s) \asymp \sum_{\xi,k\in A} d_{\xi,k} \frac{1}{(s-\xi)^k} \]
+ならば
+\[ f(x) = \sum_{\xi,k\in A} d_{\xi,k} \left( \frac{(-1)^{k-1}}{(k-1)!} x^{-\xi} (\log x)^k \right) + O(x^{-\gamma}) \]
+となる．
+\end{thm*}
+\end{leftbar}
+
+\todo[続きを書く]
+
+\todo[定理を適用するためには$g(s)$の$|s|\to\infty$の挙動を知る必要がありそう]
+
+\todo[$x$を複素数で$0$に近づけるときの話]
+
+\end{document}
