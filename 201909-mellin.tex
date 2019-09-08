@@ -128,7 +128,7 @@ A(e^{-x}) \sim \sum_{k \ge 1} \left(-1 + \exp \int_{kx}^\infty \frac{e^{-u}}{u} 
 ここで$E_1(x) = \int_{x}^\infty \frac{e^{-u}}{u} du$とおくと，
 \[ \tilde{A}(x) = \sum_{k \ge 1} \left(-1 + \exp E_1(x) \right). \]
 
-上の近似を正当化する。
+上の近似を正当化する．
 
 \begin{leftbar}
 \begin{formula*}[Euler--Maclaurinの公式]
@@ -136,7 +136,7 @@ A(e^{-x}) \sim \sum_{k \ge 1} \left(-1 + \exp \int_{kx}^\infty \frac{e^{-u}}{u} 
 \[
 \sum_{j=m}^n f(j) - \int_m^n f(t) dt = \frac{f(m)+f(n)}{2} + \int_m^n f'(t) (\{t\} - 1/2) dt.
 \]
-ここに$\{t\}$は実数$t$の小数部分。
+ここに$\{t\}$は実数$t$の小数部分．
 \end{formula*}
 \end{leftbar}
 
@@ -153,7 +153,7 @@ $f(t) = \frac{e^{-tx}}{tx}$に対してEuler--Maclaurinの公式を適用する�
 & = \frac{f(k)+f(\infty)}{2} + \int_k^\infty f'(t) (\{t\} - 1/2) dt \label{eulermac}
 \end{align}
 
-ここで$f(\infty)$は$0$であり、
+ここで$f(\infty)$は$0$であり，
 \begin{align*}
 \left| \int_k^\infty f'(t) (\{t\} - 1/2) dt \right|
 &\le \frac{1}{2} \int_k^\infty |f'(t)| dt \\
@@ -174,7 +174,7 @@ $f(t) = \frac{e^{-tx}}{tx}$に対してEuler--Maclaurinの公式を適用する�
 - \int_{kx}^\infty \frac{e^{-u}}{u} du
 \right| \le \frac{e^{-k x}}{k}.
 \end{align*}
-この左辺の絶対値の中身を$\varepsilon(k, x)$とおく。
+この左辺の絶対値の中身を$\varepsilon(k, x)$とおく．
 
 すると
 \begin{align*}
@@ -185,7 +185,7 @@ $f(t) = \frac{e^{-tx}}{tx}$に対してEuler--Maclaurinの公式を適用する�
 &\le \exp E_1(k x) \frac{e \cdot e^{-k x}}{k}.
 \end{align*}
 
-今、
+今，
 \begin{align*}
 \sum_{k=1/x}^\infty \exp E_1(k x) \frac{e \cdot e^{-k x}}{k}
 &\le \sum_{k=1/x}^\infty \exp (1) \frac{e \cdot e^{-k x}}{k} \\
@@ -214,10 +214,10 @@ $f(t) = \frac{e^{-tx}}{tx}$に対してEuler--Maclaurinの公式を適用する�
 したがって
 \begin{align*}
 |A(e^{-x}) - \tilde{A}(x)|
-&\le \sum_{k \ge 1} \left|\exp \sum_{j \ge k} \frac{e^{-jx}}{j} - \int_{kx}^\infty \frac{e^{-u}}{u} du \right| \\
+&\le \sum_{k \ge 1} \left|\exp \sum_{j \ge k} \frac{e^{-jx}}{j} - \exp \int_{kx}^\infty \frac{e^{-u}}{u} du \right| \\
 &= O(1/x)\ \ \ \ (x \to 0)
 \end{align*}
-がわかる。
+がわかる．
 
 
 
@@ -499,16 +499,30 @@ $f(x)$を$(0, \infty)$で連続な関数とし，そのメリン変換$Mf(s)$は
 \[ Mf(s) = O(|s|^{-r}) \]
 となることを仮定する．
 このときもし，$s \in \langle \gamma, \alpha \rangle$について
-\[ Mf(s) \asymp \sum_{\xi,k\in A} d_{\xi,k} \frac{1}{(s-\xi)^k} \]
+\[ Mf(s) \asymp \sum_{(\xi,k)\in A} d_{\xi,k} \frac{1}{(s-\xi)^k} \]
 ならば
-\[ f(x) = \sum_{\xi,k\in A} d_{\xi,k} \left( \frac{(-1)^{k-1}}{(k-1)!} x^{-\xi} (\log x)^k \right) + O(x^{-\gamma}) \]
+\[ f(x) = \sum_{(\xi,k)\in A} d_{\xi,k} \left( \frac{(-1)^{k-1}}{(k-1)!} x^{-\xi} (\log x)^{k-1} \right) + O(x^{-\gamma}) \]
 となる．
 \end{thm*}
 \end{leftbar}
 
-\todo[続きを書く]
+定理を$f = \tilde{A}, \alpha=1, \beta=\infty, \gamma=1/2+\varepsilon, \eta=2$で適用すると
+\[
+\tilde{A}(x) = - e^{-\gamma} x^{-1} \log x + e^{-\gamma} (g(1) - 1) x^{-1} + O(x^{-(1/2+\varepsilon)})
+\]
+を得る．
 
-\todo[定理を適用するためには$g(s)$の$|s|\to\infty$の挙動を知る必要がありそう]
+したがって，
+\[
+\tilde{A}(x) \sim e^{-\gamma} \frac{1}{x} \log \frac{1}{x}\ \ \ \ (x \to 0, x > 0)
+\]
+を得る．
+よって，
+\[
+A(e^{-x}) \sim e^{-\gamma} \frac{1}{x} \log \frac{1}{x}\ \ \ \ (x \to 0, x > 0).
+\]
+
+\todo[定理の$|s|\to\infty$で減衰するという仮定のチェック]
 
 \todo[$x$を複素数で$0$に近づけるときの話]
 
