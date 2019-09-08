@@ -37,6 +37,9 @@
 \newcommand{\append}{{}^\frown}
 \newcommand{\Ein}{\operatorname{Ein}}
 
+\renewcommand\Re{\operatorname{Re}}
+\renewcommand\Im{\operatorname{Im}}
+
 \newcommand{\needtocheck}[1][]{%
 	\ifthenelse{\equal{#1}{}}{%
 		\textcolor{blue}{[要チェック]}%
@@ -57,6 +60,7 @@
 \newtheorem{thm}{定理}
 \newtheorem*{thm*}{定理}
 \newtheorem{defi}[thm]{定義}
+\newtheorem*{defi*}{定義}
 \newtheorem{lem}[thm]{補題}
 \newtheorem*{lem*}{補題}
 \newtheorem{fact}[thm]{事実}
@@ -203,11 +207,11 @@ $f(t) = \frac{e^{-tx}}{tx}$に対してEuler--Maclaurinの公式を適用する�
 \sum_{k=1}^{1/x} \exp E_1(k x) \frac{e \cdot e^{-k x}}{k}
 &= \sum_{k=1}^{1/x} (\exp \int_{kx}^1 \frac{e^{-u}}{u} du) \exp E_1(1) \frac{e \cdot e^{-k x}}{k} \\
 &= \sum_{k=1}^{1/x} \left(\exp \int_{kx}^1 \frac{e^{-u}}{u} du\right) \exp E_1(1) \frac{e \cdot e^{-k x}}{k} \\
-&= e^{E_1(x)+1} \sum_{k=1}^{1/x} \left(\exp \int_{kx}^1 \frac{e^{-u}}{u} du\right) \frac{e^{-k x}}{k} \\
-&\le e^{E_1(x)+1} \sum_{k=1}^{1/x} \left(\exp \int_{kx}^1 \frac{1}{u} du\right) \frac{1}{k} \\
-&= e^{E_1(x)+1} \sum_{k=1}^{1/x} \frac{1}{kx} \frac{1}{k} \\
-&\le e^{E_1(x)+1} \frac{1}{x} \sum_{k=1}^{\infty} \frac{1}{k^2} \\
-&\le e^{E_1(x)+1} \zeta(2) \frac{1}{x} \\
+&= e^{E_1(1)+1} \sum_{k=1}^{1/x} \left(\exp \int_{kx}^1 \frac{e^{-u}}{u} du\right) \frac{e^{-k x}}{k} \\
+&\le e^{E_1(1)+1} \sum_{k=1}^{1/x} \left(\exp \int_{kx}^1 \frac{1}{u} du\right) \frac{1}{k} \\
+&= e^{E_1(1)+1} \sum_{k=1}^{1/x} \frac{1}{kx} \frac{1}{k} \\
+&\le e^{E_1(1)+1} \frac{1}{x} \sum_{k=1}^{\infty} \frac{1}{k^2} \\
+&\le e^{E_1(1)+1} \zeta(2) \frac{1}{x} \\
 &= O(1/x)
 \end{align*}
 
@@ -367,150 +371,180 @@ M\left[ -1 + \exp \int_{x}^\infty \frac{e^{-u}}{u} du \right](s) &= \frac{1}{s} 
 Step 4で得た結果をStep 2の式に代入する．すると，
 \begin{align*}
 M[\tilde{A}](s) &= \frac{e^{-\gamma}}{s} \zeta(s) \int_0^\infty x^{s-2} e^{-x}  \exp \Ein(x) dx \\
-&= \frac{e^{-\gamma}}{s} \zeta(s) \left(\int_0^\infty x^{s-2} e^{-x} dx + \int_0^\infty x^{s-2} e^{-x} (-1 + \exp \Ein(x)) dx \right) \\
-&= \frac{e^{-\gamma}}{s} \zeta(s) (\Gamma(s-1) + g(s))
+&= \frac{e^{-\gamma}}{s} \zeta(s) g(s-1)
 \end{align*}
 を得る．ここに
-\[ g(s) = \int_0^\infty x^{s-2} e^{-x} (-1 + \exp \Ein(x)) dx. \]
+\[ g(s) = \int_0^\infty x^{s-1} e^{\Ein(x)-x} dx. \]
 
 \subsection*{Step 6}
-このstepではガンマ関数の微分の積分表示とその上からの評価を示す．
 $\Re(s) > 0$とする．
-
-\begin{align*}
-\int_0^1 |x^{s-1} e^{-x} (\log x)^n| dx &\le \int_0^1 x^{\Re(s)-1} e^{-x} (- \log x)^n dx \\
-&\le \int_0^1 x^{\Re(s)-1} (- \log x)^n dx \\
-&= \int_0^\infty e^{\Re(s) y} y^n dy\ \ \ \ (y = - \log x) \\
-&= \frac{1}{\Re(s)^{n+1}} \int_0^\infty e^{z} z^n dz \\
-&= \frac{n!}{\Re(s)^{n+1}}.
-\end{align*}
-
-\begin{align*}
-\int_1^\infty |x^{s-1} e^{-x} (\log x)^n| dx &\le \int_1^\infty x^{\Re(s)-1} e^{-x} (\log x)^n dx \\
-&\le \int_1^\infty x^{\Re(s)-1} e^{-x} ((n/e) x^{1/n})^n dx \\
-&= (n/e)^n \int_1^\infty x^{\Re(s)} e^{-x} dx \\
-&\le (n/e)^n \int_0^\infty x^{\Re(s)} e^{-x} dx \\
-&= (n/e)^n \Gamma(\Re(s)+1) \\
-&= n! \Gamma(\Re(s)+1) & (\text{Stirlingの公式}).
-\end{align*}
-
-以上より
-\begin{align*}
-\int_0^\infty |x^{s-1} e^{-x} (\log x)^n| dx &\le n!\left(\frac{1}{\Re(s)^{n+1}} + \Gamma(\Re(s)+1)\right)
-\end{align*}
-を得る．
-
 $g(s) = \int_0^\infty x^{s-1} f(x) dx$の形の関数の微分を考える．形式的に積分記号化の微分を行うと，
 \begin{equation}
 \frac{d}{ds} g(s) = \int_0^\infty x^{s-1} f(x) \log x dx \label{dgds}
 \end{equation}
 となる．どういう条件の下でこの変形が正当化できるか考える．この式の右辺を$\tilde{g}(s)$と書くと
 \begin{align*}
-\left|\frac{g(s+h) - g(s)}{h} - \tilde{g}(s)\right| &\le \frac{1}{|h|} \int_0^\infty |x^{s-1}| |f(x)| |x^h-1-h\log x| dx \\
- &\le \frac{1}{|h|} \int_{-\infty}^\infty |e^{sy}| |f(e^y)| |e^{hy}-1-hy| dy \\
- &\le \frac{1}{|h|} \int_{-\infty}^\infty |e^{sy}| |f(e^y)| |\sum_{n\ge 2} (hy)^n / n!| dy \\
- &= \frac{1}{|h|} \sum_{n\ge 2} \frac{|h|^n}{n!} \int_{-\infty}^\infty |e^{sy}| |f(e^y)| |y|^n dy\\
- &= \frac{1}{|h|} \sum_{n\ge 2} \frac{|h|^n}{n!} \int_{0}^\infty |x^{s-1}| |f(x)| |\log x|^n dx \\
- &= |h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} \int_{0}^\infty |x^{s-1}| |f(x)| |\log x|^n dx & \text{($\heartsuit$)} \\
+\left|\frac{g(s+\Delta s) - g(s)}{h} - \tilde{g}(s)\right| &\le \frac{1}{|\Delta s|} \int_0^\infty |x^{s-1}| |f(x)| |x^{\Delta s}-1-\Delta s \log x| dx \\
+ &\le \frac{1}{|\Delta s|} \int_{-\infty}^\infty |e^{sy}| |f(e^y)| |e^{\Delta sy}-1-\Delta sy| dy \\
+ &\le \frac{1}{|\Delta s|} \int_{-\infty}^\infty |e^{sy}| |f(e^y)| |\sum_{n\ge 2} (\Delta sy)^n / n!| dy \\
+ &= \frac{1}{|\Delta s|} \sum_{n\ge 2} \frac{|\Delta s|^n}{n!} \int_{-\infty}^\infty |e^{sy}| |f(e^y)| |y|^n dy\\
+ &= \frac{1}{|\Delta s|} \sum_{n\ge 2} \frac{|\Delta s|^n}{n!} \int_{0}^\infty |x^{s-1}| |f(x)| |\log x|^n dx \\
+ &= |\Delta s| \sum_{n\ge 2} \frac{|\Delta s|^{n-2}}{n!} \int_{0}^\infty |x^{s-1}| |f(x)| |\log x|^n dx & \text{($\heartsuit$)} \\
 \end{align*}
 
-よって，式(\ref{dgds})が成り立つためには($\heartsuit$)が$h \to 0$で$0$に収束すればよい．
-
-$f(x) = e^{-x}$の場合を考えると($\heartsuit$)は
-
-\begin{align*}
-|h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} \int_{0}^\infty |x^{s-1}| |f(x)| |\log x|^n dx
-&\le |h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} n!\left(\frac{1}{\Re(s)^{n+1}} + \Gamma(\Re(s)+1)\right) \\
-&= |h| \sum_{n\ge 2} |h|^{n-2} \left(\frac{1}{\Re(s)^{n+1}} + \Gamma(\Re(s)+1)\right) \\
-&= |h| \left(\frac{1}{\Re(s)^3} \sum_{n\ge 0} \frac{|h|^n}{\Re(s)^n} + \Gamma(\Re(s)+1) \sum_{n\ge 0} |h|^n\right) \\
-&= |h| \left(\frac{1}{\Re(s)^3} \frac{1}{1 - |h|/\Re(s)} + \Gamma(\Re(s)+1) \frac{1}{1-|h|}\right) \\
-&\to 0\ \ (h \to 0)
-\end{align*}
-
-よって，
-\[
-\Gamma'(s) = \frac{d}{ds} \int_0^\infty x^{s-1} e^{-x} dx = \int_0^\infty x^{s-1} e^{-x} \log x dx.
-\]
-
-%$\Gamma$の高階微分についても，同様の議論を繰り返すことにより，
-%\[
-%\Gamma^{(n)}(s) = \frac{d^n}{ds^n} \int_0^\infty x^{s-1} e^{-x} dx = \int_0^\infty x^{s-1} e^{-x} (\log x)^n dx
-%\]
-%を得る．
+よって，式(\ref{dgds})が成り立つためには($\heartsuit$)が$\Delta s \to 0$で$0$に収束すればよい．
 
 \subsection*{Step 7}
-$g(s)$が$\Re(s) > 1/2+\varepsilon$で正則なことを示す．
-ただし，$\varepsilon$は$0 < \varepsilon < 1/2$なる任意の定数．
+$g(s)$が$\Re(s) > -1$に有理型接続されることを示す．
+まず，$\Re(s) > 0$とすると，部分積分により
+\begin{align*}
+g(s) &= \int_0^\infty x^{s-1} e^{\Ein(x)-x} dx \\
+&= -\frac{1}{s} \int_0^\infty x^s e^{\Ein(x)-x} \left(\frac{1-e^{-x}}{x} - 1\right) dx \\
+&= \frac{1}{s (s+1)} \int_0^\infty x^{s+1} e^{\Ein(x)-x} \varphi(x) dx \\
+&= \frac{1}{s (s+1)} \int_0^\infty x^{s} e^{\Ein(x)-x} \psi(x) dx \\
+\end{align*}
+ここに$x \varphi(x) = \psi(x) = x - 2 + 3 e^{-x} + \frac{e^{-2x} - e^{-x}}{x}$．
+
+$\Re(s) > -1$で$\int_0^\infty x^{s} e^{\Ein(x)-x} \psi(x) dx$が正則であればよい．つまり，
+$\Re(s) > 0$で
+\[
+h(s) = \int_0^\infty x^{s-1} e^{\Ein(x)-x} \psi(x) dx
+\]
+が正則であればよい．そうすれば$g(s)$は$\Re(s) > -1$で
+\[
+\frac{1}{s(s+1)} h(s+1)
+\]
+と有理型接続される．
 
 Step 6で行った議論より
-\[ g(s) = \int_0^\infty x^{s-2} e^{-x} (-1 + \exp \Ein(x)) dx. \]
-に対して
 \begin{align}
-|h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} \int_{0}^\infty |x^{s-2}| |e^{-x}| |-1 + \exp \Ein(x)| |\log x|^n dx \label{dgdserr}
+|\Delta s| \sum_{n\ge 2} \frac{|\Delta s|^{n-2}}{n!} \int_{0}^\infty |x^{s-1}| |e^{\Ein(x)-x}| |\psi(x)| |\log x|^n dx \label{dgdserr}
 \end{align}
-が$h \to 0$で$0$に収束することを示せばよい．
+が$\Delta s \to 0$で$0$に収束することを示せばよい．
 
-和の中身は
+中の積分の積分範囲を$0$から$1$にしたものを考える．$|e^{\Ein(x)-x}| |\psi(x)|$はこの範囲で有界だから，上界を$c$とすると
 \begin{align*}
-\int_{0}^\infty |x^{s-2}| |e^{-x}| |-1 + \exp \Ein(x)| |\log x|^n dx
-&\le \sum_{k\ge 1} \frac{1}{k!} \int_{0}^\infty |x^{s-2}| |e^{-x}| |\Ein(x)|^k |\log x|^n dx \\
-&\le \sum_{k\ge 1} \frac{1}{k!} \int_{0}^\infty |x^{s+k/2-2}| |e^{-x}| |\log x|^n dx \\
-&\le \sum_{k\ge 1} \frac{1}{k!} n!\left(\frac{1}{\Re(s+k/2-1)^{n+1}} + \Gamma(\Re(s+k/2-1)+1)\right) \\
-&= n! \sum_{k\ge 1} \frac{1}{k!} \left(\frac{1}{(\Re(s)+k/2-1)^{n+1}} + \Gamma(\Re(s)+k/2)\right) \\
-&\le n! \times \text{(定数)}
+\int_0^1 |x^{s-1}| |e^{\Ein(x)-x}| |\psi(x)| |\log x|^n dx
+&\le c \int_0^1 x^{\Re(s)-1} (-\log x)^n dx \\
+&= c \int_0^\infty e^{\Re(s) y} y^n dy\ \ \ \ (y = - \log x) \\
+&= \frac{c}{\Re(s)^{n+1}} \int_0^\infty e^{z} z^n dz \\
+&= \frac{c n!}{\Re(s)^{n+1}}.
 \end{align*}
-\todo[定数をもっと詳しく書く]
+他方で，積分範囲を$1$から$\infty$にしたものは，
+\begin{align}
+\int_1^\infty |x^{s-1}| |e^{\Ein(x)-x}| |\psi(x)| |\log x|^n dx
+&\le \int_1^\infty |x^{s-1}| |e^{\Ein(x)-x}| |\psi(x)| ((n/e) x^{1/n})^n dx \notag \\
+&\le \left(\frac{n}{e}\right)^n \int_1^\infty x^{\Re(s)} |e^{\Ein(x)-x}| |\psi(x)| dx \notag \\
+&\le \left(\frac{n}{e}\right)^n (\int_1^\infty x^{\Re(s)+1} |e^{\Ein(x)-x}| dx + 7\int_1^\infty x^{\Re(s)} |e^{\Ein(x)-x}| dx) \label{int1inf}
+\end{align}
+最初の式変形は$\log x \le (n/e) x^{1/n}$を使った．最後の式変形は$|\psi(x)| \le x + 7$を使った．
 
-式 (\ref{dgdserr})に代入して
+ここで
 \begin{align*}
-|h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} \int_{0}^\infty |x^{s-2}| |e^{-x}| |-1 + \exp \Ein(x)| |\log x|^n dx
-&\le |h| \sum_{n\ge 2} \frac{|h|^{n-2}}{n!} n! \times \text{(定数)} \\
-&\le \text{(定数)} |h| \sum_{n\ge 2} |h|^{n-2} \\
-&\le \text{(定数)} |h|/(1-|h|) \\
-&\to 0\ \ (h \to 0).
+\int_1^\infty x^t e^{\Ein(x)-x} dx
+&\le \int_1^\infty x^t e^{1+\log x - x} dx \\
+&\le e \int_1^\infty x^{t+1} e^{- x} dx \\
+&\le e \Gamma(t+2)
+\end{align*}
+なことを使えば，
+
+\begin{align*}
+\text{式 (\ref{int1inf})}
+&\le \left(\frac{n}{e}\right)^n e (\Gamma(\Re(s)+3) + 7 \Gamma(\Re(s)+2)) \\
+&\le e n!  (\Gamma(\Re(s)+3) + 7 \Gamma(\Re(s)+2))
 \end{align*}
 
-よって，$g(s)$は$\Re(s) > 1/2 + \varepsilon$で正則．
+したがって，式 (\ref{dgdserr})の評価は
+\begin{align*}
+&|\Delta s| \sum_{n\ge 2} \frac{|\Delta s|^{n-2}}{n!} \int_{0}^\infty |x^{s-1}| |e^{\Ein(x)-x}| |\psi(x)| |\log x|^n dx \\
+&\ \ \ \ \le |\Delta s| \sum_{n\ge 2} \frac{|\Delta s|^{n-2}}{n!} n! (\frac{c}{\Re(s)^{n+1}} + e \Gamma(\Re(s)+3) + 7 e \Gamma(\Re(s)+2)) \\
+&\ \ \ \ = |\Delta s| \sum_{n\ge 2} |\Delta s|^{n-2} (\frac{c}{\Re(s)^{n+1}} + e \Gamma(\Re(s)+3) + 7 e \Gamma(\Re(s)+2)) \\
+&\ \ \ \ = |\Delta s| \left(\frac{c}{\Re(s)^3} \frac{1}{1-|\Delta s|/\Re(s)} + (e \Gamma(\Re(s)+3) + 7 e \Gamma(\Re(s)+2)) \frac{1}{1-|\Delta s|} \right) \\
+&\ \ \ \ \to 0\ \ \ \ (\Delta s \to 0)
+\end{align*}
+
+よって$g(s)$は$\Re(s) > -1$に有理型接続される．
 
 \subsection*{Step 8}
 以上より
 \begin{align*}
-M[\tilde{A}](s) &= \frac{e^{-\gamma}}{s} \zeta(s) (\Gamma(s-1) + g(s))
+M[\tilde{A}](s) &= \frac{e^{-\gamma}}{s} \zeta(s) g(s-1) \\
+&= \frac{e^{-\gamma}}{s} \zeta(s) \frac{1}{(s-1) s} h(s) \\
+&= \frac{e^{-\gamma}}{s^2 (s-1)} \zeta(s) h(s)
 \end{align*}
-を得る．ここに$g(s)$は$\Re(s) > 1/2+\varepsilon$で正則な関数．
+を得る．ここに$h(s)$は$\Re(s) > 0$で正則な関数．
 
-$1/s$のテイラー展開と$\zeta(s)$と$\Gamma(s-1)$のローラン展開は
-\[ 1/s = 1 - (s - 1) + O((s-1)^2) \ \ \ \ (s \to 1)\]
-\[ \zeta(s) = \frac{1}{s-1} + \gamma + O(s-1) \ \ \ \ (s \to 1) \]
-\[ \Gamma(s-1) = \frac{1}{s-1} - \gamma + O(s-1) \ \ \ \ (s \to 1) \]
-なことを使うと，$\Re(s) > 1/2+\varepsilon$で$M[\tilde{A}](s)$は
-\[ M[\tilde{A}](s) \asymp  \frac{e^{-\gamma}}{(s-1)^2} + \frac{e^{-\gamma} (g(1) - 1)}{s-1} \]
-となる．ここに$\asymp$は差が正則関数の意味．
+$1/s^2, h(s)$のテイラー展開と$\zeta(s)$のローラン展開は
+\begin{align*}
+1/s^2 &= 1 - 2(s - 1) + O((s-1)^2) \ \ \ \ (s \to 1) \\
+h(s) &= h(1) + h'(1)(s - 1) + O((s-1)^2) \ \ \ \ (s \to 1) \\
+\zeta(s) &= \frac{1}{s-1} + \gamma + O(s-1) \ \ \ \ (s \to 1)
+\end{align*}
+なことを使うと，$\Re(s) > 0$で$M[\tilde{A}](s)$は
+\begin{align}
+M[\tilde{A}](s) \asymp  \frac{e^{-\gamma} h(1)}{(s-1)^2} + \frac{e^{-\gamma} h(1) (-2+\gamma) + h'(1)}{s-1} \label{mas}
+\end{align}
+と有理型接続される．ここに$\asymp$は差が正則関数の意味．
+
+$h(1) = 1$を示す．
+\[
+h(1) = \int_0^\infty e^{\Ein(x)-x} \psi(x) dx
+\]
+であるが，$\psi(x)$の定義をよく見ると
+\[
+e^{\Ein(x)-x} \psi(x) = x \frac{d^2}{dx^2} e^{\Ein(x)-x}
+\]
+であるので，
+\begin{align*}
+h(1) &= \int_0^\infty x \frac{d^2}{dx^2} e^{\Ein(x)-x} dx \\
+&= \left[x \frac{d}{dx} e^{\Ein(x)-x}\right]_{x=0}^\infty - \int_0^\infty \frac{d}{dx} e^{\Ein(x)-x} dx \\
+&= \left[x \frac{d}{dx} e^{\Ein(x)-x} - e^{\Ein(x)-x}\right]_{x=0}^\infty \\
+&= \left[x e^{\Ein(x)-x} \left(\frac{1-e^{-x}}{x}-1\right) - e^{\Ein(x)-x}\right]_{x=0}^\infty \\
+&= 1
+\end{align*}
+となる．式 (\ref{mas})に$h(1)=1$を代入すると
+\begin{align*}
+M[\tilde{A}](s) \asymp  \frac{e^{-\gamma}}{(s-1)^2} + \frac{e^{-\gamma} (-2+\gamma) + h'(1)}{s-1} \label{mas}.
+\end{align*}
+
 
 \subsection*{Step 9}
 メリン変換の漸近挙動の対応の定理を使う．
 
+\begin{defi*}
+実数$a < b$について$\langle a, b \rangle = \{s \in \C \mid a < \Re(s) < b \}$とおく．
+メリン変換$Mf(s)$の値が$\langle a, b \rangle$内で存在するような最大の$\langle a, b \rangle$をこのメリン変換のfundamental stripという．
+\end{defi*}
 
 \begin{leftbar}
 \begin{thm*}
-$f(x)$を$(0, \infty)$で連続な関数とし，そのメリン変換$Mf(s)$はfundamental strip $\langle \alpha, \beta \rangle$を持つとする． \todo[fundamental stripの定義]
-ある$\gamma< \alpha$について，$Mf(s)$が$\langle \gamma, \beta \rangle$に有理型接続できると仮定し，そこで極は有限個で，$\Re(s) = \gamma$で解析的とする．
-また，$\eta \in (\alpha, \beta)$と$r > 1$が存在して，$\gamma \leq \Re(s) \leq \eta$で$|s| \to \infty$としたとき
+$f(x)$を$(0, \infty)$で連続な関数とし，そのメリン変換$Mf(s)$はfundamental strip $\langle \alpha, \beta \rangle$を持つとする．
+ある$\alpha' < \alpha$について，$Mf(s)$が$\langle \alpha', \beta \rangle$に有理型接続できると仮定し，そこで極は有限個で，$\Re(s) = \gamma$で解析的とする．
+また，$\eta \in (\alpha, \beta)$と$r > 1$が存在して，$\alpha' \leq \Re(s) \leq \eta$で$|s| \to \infty$としたとき
 \[ Mf(s) = O(|s|^{-r}) \]
 となることを仮定する．
-このときもし，$s \in \langle \gamma, \alpha \rangle$について
+このときもし，$s \in \langle \alpha', \alpha \rangle$について
 \[ Mf(s) \asymp \sum_{(\xi,k)\in A} d_{\xi,k} \frac{1}{(s-\xi)^k} \]
 ならば
-\[ f(x) = \sum_{(\xi,k)\in A} d_{\xi,k} \left( \frac{(-1)^{k-1}}{(k-1)!} x^{-\xi} (\log x)^{k-1} \right) + O(x^{-\gamma}) \]
+\[ f(x) = \sum_{(\xi,k)\in A} d_{\xi,k} \left( \frac{(-1)^{k-1}}{(k-1)!} x^{-\xi} (\log x)^{k-1} \right) + O(x^{-\alpha'}) \]
 となる．
 \end{thm*}
 \end{leftbar}
 
-定理を$f = \tilde{A}, \alpha=1, \beta=\infty, \gamma=1/2+\varepsilon, \eta=2$で適用すると
+定理を$f = \tilde{A}, \alpha=1, \beta=\infty, \alpha'=0.501, \eta=2$で適用すると
 \[
-\tilde{A}(x) = - e^{-\gamma} x^{-1} \log x + e^{-\gamma} (g(1) - 1) x^{-1} + O(x^{-(1/2+\varepsilon)})
+\tilde{A}(x) = - e^{-\gamma} x^{-1} \log x + (e^{-\gamma} (-2+\gamma) + h'(1)) x^{-1} + O(x^{-0.501})
 \]
 を得る．
+
+ここで定理の$Mf(s)$が$|s| \to \infty$で減衰するという仮定を確かめよう．$h$の定義より
+\[
+|h(s)| \le |h(\Re(s))|
+\]
+であり，$|h(s)|$はその連続性より$\alpha' \le s \le \eta$で有界なので$|h(s)|$は$\alpha' \le \Re(s) \le \eta$で有界．
+また，$\zeta(s)$については$\Re(s)>1/2$で$\zeta(s) = O(\Im(s)^{1/2})$であることが知られている．これについてはPaul T BetemanとHarold G Diamondの``Analytic Number Theory: An Introductory Course''を見よ．
+
+よって定理の$Mf(s)$が減衰することの仮定は確かめられた．
 
 したがって，
 \[
@@ -521,8 +555,6 @@ $f(x)$を$(0, \infty)$で連続な関数とし，そのメリン変換$Mf(s)$は
 \[
 A(e^{-x}) \sim e^{-\gamma} \frac{1}{x} \log \frac{1}{x}\ \ \ \ (x \to 0, x > 0).
 \]
-
-\todo[定理の$|s|\to\infty$で減衰するという仮定のチェック]
 
 \todo[$x$を複素数で$0$に近づけるときの話]
 
